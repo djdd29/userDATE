@@ -1,0 +1,637 @@
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#050912">
+<title>DATE HUNTER</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&display=swap');
+
+:root {
+--blue:#168cff;
+--cyan:#00c8ff;
+--bg:#050912;
+--panel:#0b1423;
+--border:#183553;
+--muted:#8498b5;
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+
+body{
+background:radial-gradient(ellipse at 50% -15%,#123d75,transparent 48%),var(--bg);
+color:#f2f7ff;
+font-family:Cairo,sans-serif;
+min-height:100vh;
+}
+
+button,input,select{font-family:inherit}
+
+header{
+height:75px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:0 7%;
+border-bottom:1px solid #14243b;
+background:#050a14ed;
+position:sticky;
+top:0;
+z-index:10;
+backdrop-filter:blur(15px);
+}
+
+.logo{font-size:23px;font-weight:900;letter-spacing:2px}
+.logo span{color:var(--blue);text-shadow:0 0 18px var(--blue)}
+
+.status{
+font-size:11px;
+color:#60b9ff;
+border:1px solid #174c79;
+padding:7px 12px;
+border-radius:30px;
+}
+
+.hero{text-align:center;padding:55px 15px 30px}
+.hero h1{font-size:clamp(35px,8vw,63px);font-weight:900;letter-spacing:3px}
+.hero h1 span{color:var(--blue);text-shadow:0 0 30px #168cff}
+.hero p{color:var(--muted);font-size:13px;margin-top:5px}
+
+.container{max-width:850px;margin:auto;padding:10px 16px 60px}
+
+.tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:20px}
+
+.tab{
+background:#0b1423;
+color:#8da6c5;
+border:1px solid var(--border);
+border-radius:11px;
+padding:12px 3px;
+cursor:pointer;
+font-size:12px;
+font-weight:900;
+}
+
+.tab.active{
+color:white;
+background:#102d50;
+border-color:var(--blue);
+box-shadow:0 0 18px #087fff30;
+}
+
+.panel{
+background:linear-gradient(145deg,#0d1b2d,#080f1c);
+border:1px solid var(--border);
+border-radius:18px;
+padding:23px;
+box-shadow:0 15px 50px #0007;
+}
+
+.hidden{display:none}
+
+.title{font-size:19px;font-weight:900;margin-bottom:5px}
+.desc{font-size:12px;color:var(--muted);margin-bottom:22px}
+
+.field{margin-bottom:17px}
+
+label{display:block;font-size:13px;font-weight:800;margin-bottom:8px}
+
+input,select{
+width:100%;
+padding:13px;
+background:#07101e;
+color:white;
+border:1px solid #203a59;
+border-radius:10px;
+outline:none;
+font-size:14px;
+}
+
+input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 12px #168cff30}
+
+select option{background:#07101e}
+
+.primary{
+width:100%;
+padding:14px;
+border:0;
+border-radius:10px;
+background:linear-gradient(100deg,#0873e9,#00aaff);
+color:white;
+font-size:14px;
+font-weight:900;
+cursor:pointer;
+box-shadow:0 0 20px #087fff40;
+}
+
+.primary:disabled{opacity:.5;cursor:not-allowed}
+
+.secondary{
+background:#10233b;
+border:1px solid #24476c;
+color:#b8d9ff;
+padding:9px 12px;
+border-radius:8px;
+cursor:pointer;
+font-size:11px;
+font-weight:800;
+}
+
+.results-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:25px 0 12px;
+}
+
+.results-head h3{font-size:15px}
+.count{color:#55b5ff;font-size:12px}
+
+.result{
+background:#081321;
+border:1px solid #182d48;
+border-radius:11px;
+padding:12px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+gap:8px;
+margin-bottom:9px;
+}
+
+.username{font-size:17px;font-weight:900;direction:ltr}
+.result-info{font-size:10px;color:#8299b7;margin-top:3px}
+
+.actions{display:flex;gap:6px;align-items:center}
+
+.copy,.favorite{
+border:1px solid #1767a5;
+background:#0b2948;
+color:#6bc0ff;
+padding:8px 10px;
+border-radius:8px;
+cursor:pointer;
+font-size:11px;
+font-weight:800;
+}
+
+.favorite{border-color:#30425a;background:#111d2c}
+
+.notice{
+background:#0b1b2c;
+border:1px solid #17436c;
+color:#a5cfff;
+border-radius:10px;
+padding:13px;
+margin-top:15px;
+font-size:11px;
+line-height:2;
+}
+
+.warning{
+background:#261d0b;
+border:1px solid #66501d;
+color:#eacb82;
+padding:12px;
+border-radius:10px;
+font-size:11px;
+line-height:2;
+margin-top:12px;
+}
+
+.check-result{
+margin-top:17px;
+padding:18px;
+background:#071321;
+border:1px solid #203a59;
+border-radius:12px;
+text-align:center;
+}
+
+.check-result .big{font-size:20px;font-weight:900}
+.check-result p{font-size:11px;color:var(--muted);margin-top:7px;line-height:2}
+
+.empty{text-align:center;color:var(--muted);padding:24px;font-size:13px}
+
+.discord{
+display:block;
+text-align:center;
+margin-top:17px;
+padding:13px;
+border:1px solid #31517a;
+border-radius:10px;
+color:#a9d6ff;
+text-decoration:none;
+background:#0b1a2c;
+font-size:13px;
+font-weight:900;
+}
+
+footer{
+border-top:1px solid #14243b;
+text-align:center;
+padding:23px;
+color:#62758e;
+font-size:12px;
+}
+
+footer b{color:var(--blue)}
+
+@media(max-width:500px){
+header{padding:0 15px}
+.panel{padding:16px}
+.result{padding:9px}
+.username{font-size:15px}
+.tab{font-size:10px}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">DATE <span>HUNTER</span></div>
+<div class="status">● SYSTEM ONLINE</div>
+</header>
+
+<section class="hero">
+<h1>DATE <span>HUNTER</span></h1>
+<p>DISCOVER YOUR NEXT DISCORD IDENTITY</p>
+</section>
+
+<main class="container">
+
+<div class="tabs">
+<button class="tab active" onclick="switchTab('users',this)">GENERATOR</button>
+<button class="tab" onclick="switchTab('checker',this)">CHECKER</button>
+<button class="tab" onclick="switchTab('shortcuts',this)">SHORTCUTS</button>
+</div>
+
+<!-- GENERATOR -->
+
+<section id="users" class="panel">
+
+<div class="title">Discord Username Hunter</div>
+<div class="desc">اصنع يوزرات مميزة حسب اختيارك</div>
+
+<div class="field">
+<label>نوع اليوزر</label>
+<select id="userType">
+<option value="2">ثنائي</option>
+<option value="quasi">شبه أحادي</option>
+<option value="3">ثلاثي</option>
+<option value="4">رباعي</option>
+<option value="5">خماسي</option>
+<option value="6">سداسي</option>
+</select>
+</div>
+
+<div class="field">
+<label>نوع الأحرف</label>
+<select id="userStyle">
+<option value="all">حروف وأرقام</option>
+<option value="letters">حروف فقط</option>
+<option value="numbers">أرقام فقط</option>
+<option value="mixed">حروف وأرقام معاً</option>
+</select>
+</div>
+
+<div class="field">
+<label>عدد النتائج</label>
+<select id="userCount">
+<option value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+
+<button class="primary" onclick="generateUsers()">⚡ GENERATE USERNAMES</button>
+
+<div class="warning">
+الأسماء المولدة ليست مؤكدة التوفر. التحقق النهائي يكون من ديسكورد.
+</div>
+
+<div class="results-head">
+<h3>Generated Results</h3>
+<span class="count" id="userTotal">0 Results</span>
+</div>
+
+<div id="userResults"><div class="empty">ابدأ التوليد الآن</div></div>
+
+</section>
+
+<!-- CHECKER -->
+
+<section id="checker" class="panel hidden">
+
+<div class="title">Username Checker</div>
+<div class="desc">اكتب اليوزر الذي تريد معرفة حالته</div>
+
+<div class="field">
+<label>Discord Username</label>
+<input id="checkInput" type="text" maxlength="32"
+placeholder="example123" autocomplete="off"
+oninput="clearCheck()">
+</div>
+
+<button class="primary" onclick="checkUsername()">
+🔍 CHECK USERNAME
+</button>
+
+<div id="checkResult"></div>
+
+<div class="notice">
+<strong>كيف يتم التأكد؟</strong><br>
+لا توجد واجهة API عامة رسمية لفحص توفر يوزرات الحسابات بشكل عشوائي. لذلك لا يمكن لهذا الموقع الجزم بأن الاسم مستخدم أو متاح من مجرد البحث عنه.
+<br><br>
+يمكنك فتح إعدادات ديسكورد وتجربة الاسم هناك، وستكون رسالة ديسكورد هي المرجع النهائي.
+</div>
+
+<button class="secondary" style="width:100%;margin-top:13px"
+onclick="window.open('https://discord.com/channels/@me','_blank')">
+OPEN DISCORD ↗
+</button>
+
+</section>
+
+<!-- SHORTCUTS -->
+
+<section id="shortcuts" class="panel hidden">
+
+<div class="title">Server Shortcut Hunter</div>
+<div class="desc">ولّد اختصارات مميزة لسيرفرك</div>
+
+<div class="field">
+<label>طول الاختصار</label>
+<select id="shortType">
+<option value="2">ثنائي</option>
+<option value="3">ثلاثي</option>
+<option value="4">رباعي</option>
+<option value="5">خماسي</option>
+</select>
+</div>
+
+<div class="field">
+<label>نوع الأحرف</label>
+<select id="shortStyle">
+<option value="all">حروف وأرقام</option>
+<option value="letters">حروف فقط</option>
+<option value="numbers">أرقام فقط</option>
+<option value="mixed">مختلط</option>
+</select>
+</div>
+
+<div class="field">
+<label>عدد النتائج</label>
+<select id="shortCount">
+<option value="10">10</option>
+<option value="25">25</option>
+<option value="50">50</option>
+<option value="100">100</option>
+</select>
+</div>
+
+<button class="primary" onclick="generateShortcuts()">⚡ GENERATE SHORTCUTS</button>
+
+<div class="warning">
+هذه اختصارات مقترحة وليست روابط محجوزة أو مؤكدة التوفر.
+</div>
+
+<div class="results-head">
+<h3>Generated Shortcuts</h3>
+<span class="count" id="shortTotal">0 Results</span>
+</div>
+
+<div id="shortResults"><div class="empty">ابدأ التوليد</div></div>
+
+</section>
+
+<a class="discord" href="https://discord.gg/6aa" target="_blank">
+JOIN DATE SERVER ↗
+</a>
+
+</main>
+
+<footer>
+POWERED BY <b>DATE</b> © 2026
+<br>DATE HUNTER — PREMIUM EDITION
+</footer>
+
+<script>
+
+const letters="abcdefghijklmnopqrstuvwxyz";
+const numbers="0123456789";
+const all=letters+numbers;
+
+let favorites=JSON.parse(localStorage.getItem("dateFavorites")||"[]");
+let generated=new Set();
+
+function switchTab(id,button){
+
+document.querySelectorAll(".panel").forEach(p=>p.classList.add("hidden"));
+document.getElementById(id).classList.remove("hidden");
+
+document.querySelectorAll(".tab").forEach(t=>t.classList.remove("active"));
+button.classList.add("active");
+
+if(id==="checker")document.getElementById("checkInput").focus();
+
+}
+
+function clearCheck(){
+document.getElementById("checkResult").innerHTML="";
+}
+
+function checkUsername(){
+
+const input=document.getElementById("checkInput");
+const name=input.value.trim().toLowerCase();
+const result=document.getElementById("checkResult");
+
+if(!name){
+result.innerHTML='<div class="check-result"><div class="big">أدخل اليوزر أولاً</div></div>';
+return;
+}
+
+if(!/^[a-z0-9_.]+$/.test(name)){
+result.innerHTML=`
+<div class="check-result">
+<div class="big" style="color:#ff6868">صيغة غير صحيحة</div>
+<p>استخدم الحروف الإنجليزية والأرقام والرموز المسموح بها فقط.</p>
+</div>`;
+return;
+}
+
+if(name.length<2||name.length>32){
+result.innerHTML=`
+<div class="check-result">
+<div class="big" style="color:#ff6868">طول غير صحيح</div>
+<p>تحقق من طول اسم المستخدم.</p>
+</div>`;
+return;
+}
+
+result.innerHTML=`
+<div class="check-result">
+<div class="big" style="color:#eacb82">⚠ تعذر التحقق رسمياً</div>
+<p>
+الاسم: <b dir="ltr">${escapeHTML(name)}</b><br>
+لم يتم تأكيد أنه مستخدم أو متاح.<br>
+لا توجد واجهة عامة رسمية لفحص توفر أسماء الحسابات بهذه الطريقة.
+</p>
+<button class="secondary" style="margin-top:12px"
+onclick="window.open('https://discord.com/channels/@me','_blank')">
+افتح ديسكورد وجرب الاسم
+</button>
+</div>`;
+
+}
+
+function escapeHTML(value){
+return value.replace(/[&<>"']/g,c=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+}[c]));
+}
+
+function randomChar(pool){
+return pool[Math.floor(Math.random()*pool.length)];
+}
+
+function createName(length,style){
+
+let pool=style==="letters"?letters:
+style==="numbers"?numbers:all;
+
+let result="";
+
+for(let i=0;i<length;i++){
+result+=randomChar(pool);
+}
+
+if(style==="mixed"){
+if(!/[a-z]/.test(result)){
+result=letters[Math.floor(Math.random()*26)]+result.slice(1);
+}
+if(!/[0-9]/.test(result)){
+result=result.slice(0,-1)+randomChar(numbers);
+}
+}
+
+return result;
+
+}
+
+function generate(type,style,count){
+
+let results=[];
+let local=new Set();
+let attempts=0;
+
+while(results.length<count&&attempts<count*1000){
+
+attempts++;
+
+let name=type==="quasi"?createName(2,"mixed"):createName(Number(type),style);
+
+if(!local.has(name)&&!generated.has(name)){
+local.add(name);
+generated.add(name);
+results.push(name);
+}
+
+}
+
+return results;
+
+}
+
+function generateUsers(){
+
+let results=generate(
+document.getElementById("userType").value,
+document.getElementById("userStyle").value,
+Number(document.getElementById("userCount").value)
+);
+
+document.getElementById("userTotal").textContent=results.length+" Results";
+
+renderResults(results,"userResults","username");
+
+}
+
+function generateShortcuts(){
+
+let results=generate(
+document.getElementById("shortType").value,
+document.getElementById("shortStyle").value,
+Number(document.getElementById("shortCount").value)
+);
+
+document.getElementById("shortTotal").textContent=results.length+" Results";
+
+renderResults(results,"shortResults","shortcut");
+
+}
+
+function renderResults(results,id,type){
+
+let container=document.getElementById(id);
+
+if(!results.length){
+container.innerHTML='<div class="empty">لا توجد نتائج جديدة</div>';
+return;
+}
+
+container.innerHTML=results.map(name=>`
+
+<div class="result">
+<div>
+<div class="username">${name}</div>
+<div class="result-info">غير مفحوص رسمياً</div>
+</div>
+<div class="actions">
+<button class="favorite" onclick="addFavorite('${name}','${type}')">♡</button>
+<button class="copy" onclick="copyName('${name}',this)">COPY</button>
+</div>
+</div>
+
+`).join("");
+
+}
+
+function copyName(name,button){
+
+navigator.clipboard.writeText(name).then(()=>{
+button.textContent="COPIED ✓";
+setTimeout(()=>button.textContent="COPY",1200);
+}).catch(()=>{
+alert("تعذر النسخ");
+});
+
+}
+
+function addFavorite(name,type){
+
+if(favorites.some(x=>x.name===name&&x.type===type)){
+alert("الاسم موجود مسبقاً");
+return;
+}
+
+favorites.push({name,type});
+localStorage.setItem("dateFavorites",JSON.stringify(favorites));
+alert("تم الحفظ ♡");
+
+}
+
+</script>
+
+</body>
+</html>
